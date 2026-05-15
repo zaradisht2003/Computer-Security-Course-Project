@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================================
-# NIST STS Automation Script 
+# NIST STS Automation Script
 # (Aggregated 15-Test Summary Output)
 # ==========================================
 
@@ -10,14 +10,15 @@ if [ ! -f "assess" ]; then
     exit 1
 fi
 
+# Point exactly to the pure raw binary files we generated
 IMAGES=(
-    "../encrypted_ECB.bmp"
-    "../encrypted_CBC.bmp"
-    "../encrypted_CFB.bmp"
-    "../encrypted_OFB.bmp"
+    "../original_image.bin"
+    "../encrypted_ECB.bin"
+    "../encrypted_CBC.bin"
+    "../encrypted_CFB.bin"
+    "../encrypted_OFB.bin"
 )
 
-# The 15 subdirectories NIST absolutely requires to not crash
 NIST_DIRS=(
     "ApproximateEntropy" "BlockFrequency" "CumulativeSums"
     "FFT" "Frequency" "LinearComplexity" "LongestRun"
@@ -27,7 +28,7 @@ NIST_DIRS=(
 )
 
 MASTER_REPORT="../NIST_Comprehensive_Report.txt"
-> "$MASTER_REPORT" # Clear the master report at the start
+> "$MASTER_REPORT"
 
 for IMG in "${IMAGES[@]}"; do
     if [ ! -f "$IMG" ]; then
@@ -38,19 +39,23 @@ for IMG in "${IMAGES[@]}"; do
     echo "-----------------------------------------------------"
     echo "Testing: $IMG"
 
-    # 1. GUARANTEE DIRECTORIES EXIST
     for dir in "${NIST_DIRS[@]}"; do
         mkdir -p "experiments/AlgorithmTesting/$dir"
     done
 
-    # 2. CALCULATE BITS AND ADD SAFETY BUFFER
+    # Calculate single stream length safely
     FILE_SIZE=$(stat -c %s "$IMG")
     TOTAL_BITS=$((FILE_SIZE * 8))
-    STREAM_LENGTH=$((TOTAL_BITS - 128)) 
+    STREAM_LENGTH=$((TOTAL_BITS - 128))
     
+    # Anti-Infinite-Loop Safeguard
+    if [ "$STREAM_LENGTH" -le 0 ]; then
+        echo "Error: Stream length is zero or negative. File might be empty. Skipping..."
+        continue
+    fi
+
     echo "File is $TOTAL_BITS bits. Running 1 stream of $STREAM_LENGTH bits..."
 
-    # 3. RUN NIST ASSESS
     ./assess "$STREAM_LENGTH" <<EOF > nist_debug_log.txt 2>&1
 0
 $IMG
@@ -60,20 +65,20 @@ $IMG
 1
 EOF
 
-    # 4. GRAB AND SUMMARIZE THE NATIVE REPORT
     REPORT_PATH="experiments/AlgorithmTesting/finalAnalysisReport.txt"
     
     if [ -f "$REPORT_PATH" ]; then
         BASENAME=$(basename "$IMG")
+        
+        # Clean up the name for the report whether it's encrypted or original
         SHORT_NAME=${BASENAME#encrypted_}
-        SHORT_NAME=${SHORT_NAME%.bmp}
+        SHORT_NAME=${SHORT_NAME%.bin}
         
         echo "=== $SHORT_NAME ===" >> "$MASTER_REPORT"
         echo "--------------------------------------------------------" >> "$MASTER_REPORT"
         echo " TEST NAME                 | RESULTS" >> "$MASTER_REPORT"
         echo "--------------------------------------------------------" >> "$MASTER_REPORT"
         
-        # Use awk to aggregate the 188 lines into exactly 15 test categories
         awk '
         BEGIN {
             tests[1]="Frequency"; tests[2]="BlockFrequency"; tests[3]="CumulativeSums";
@@ -82,21 +87,14 @@ EOF
             tests[11]="ApproximateEntropy"; tests[12]="RandomExcursions";
             tests[13]="RandomExcursionsVariant"; tests[14]="Serial"; tests[15]="LinearComplexity";
             
-            total_passed = 0;
-            total_tests = 0;
+            total_passed = 0; total_tests = 0;
         }
-        # Match data lines (starts with spaces followed by numbers)
         /^[ \t]*[0-9]/ {
-            test_name = $NF;
-            prop = $(NF-1);
-            
+            test_name = $NF; prop = $(NF-1);
             if (prop ~ /[0-9]+\/[0-9]+/) {
                 split(prop, frac, "/");
-                passed[test_name] += frac[1];
-                total[test_name] += frac[2];
-                
-                total_passed += frac[1];
-                total_tests += frac[2];
+                passed[test_name] += frac[1]; total[test_name] += frac[2];
+                total_passed += frac[1]; total_tests += frac[2];
             }
         }
         END {
@@ -119,24 +117,15 @@ EOF
         echo -e "\n\n" >> "$MASTER_REPORT"
         echo "Test completed successfully!"
         
-        # 5. BACKUP AND CLEANUP
         mkdir -p "experiments/Results_$BASENAME"
         cp -r experiments/AlgorithmTesting/* "experiments/Results_$BASENAME/"
-        
-        # Safe cleanup: Delete text files, keep folders
         find experiments/AlgorithmTesting -type f -name "*.txt" -delete
     else
         echo "Error: Test failed entirely for $IMG."
-        echo "--- NIST CRASH LOG ---"
         cat nist_debug_log.txt
-        echo "----------------------"
     fi
-
 done
 
-# Clean up debug log
 rm -f nist_debug_log.txt
-
 echo "-----------------------------------------------------"
-echo "Automation Complete!"
-echo "Your full report is saved at: $MASTER_REPORT"
+echo "Automation Complete! Report saved at: $MASTER_REPORT"

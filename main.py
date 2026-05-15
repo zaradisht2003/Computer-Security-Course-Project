@@ -15,6 +15,29 @@ print("--- TASK 1: AES Encryption ---")
 
 input_image = 'portal_image.bmp'
 
+# Read the raw binary file directly
+try:
+    with open(input_image, 'rb') as f:
+        raw_data = f.read()
+except Exception as e:
+    print(f"Error opening source image: {e}")
+    exit()
+
+# Standard BMP headers are 54 bytes. 
+HEADER_SIZE = 54
+header = raw_data[:HEADER_SIZE]
+body = raw_data[HEADER_SIZE:]
+
+total_body_bytes = len(body)
+
+# --- NEW: Save the raw original body as a .bin file for NIST ---
+# We strip the header so NIST only tests the actual pixel data payload
+with open('original_image.bin', 'wb') as f:
+    f.write(body)
+print("Successfully created original_image.bin for NIST testing.")
+
+# ... (The rest of your Python encryption code continues below) ...
+
 # Load the image using PIL to safely handle any underlying compression
 try:
     img = Image.open(input_image).convert('RGB')
@@ -35,8 +58,10 @@ print(f"Generated AES-128 Key: {aes_key.hex()}")
 padded_body = pad(body, AES.block_size)
 
 # Define a function to encrypt and save the image properly
+# Define a function to encrypt and save both the raw bytes and the image
 def encrypt_and_save(mode_name, mode_flag, iv=None):
-    output_filename = f'encrypted_{mode_name}.bmp'
+    output_bmp = f'encrypted_{mode_name}.bmp'
+    output_bin = f'encrypted_{mode_name}.bin'
     
     if mode_name == 'ECB':
         cipher = AES.new(aes_key, mode_flag)
@@ -45,14 +70,19 @@ def encrypt_and_save(mode_name, mode_flag, iv=None):
         
     ciphertext_body = cipher.encrypt(padded_body)
     
+    # --- FIX: Save pure raw ciphertext for NIST STS ---
+    # This bypasses the BMP header and row padding, preventing the NIST freeze
+    with open(output_bin, 'wb') as f:
+        f.write(ciphertext_body)
+    
+    # --- Reconstruct the image for Task 3 plotting ---
     # Truncate any extra padding blocks so it matches the exact pixel dimensions
     encrypted_pixel_bytes = ciphertext_body[:total_pixel_bytes]
     
-    # Reconstruct a new image from the encrypted bytes. 
-    # Pillow handles writing a completely valid, uncorrupted BMP header automatically.
+    # Pillow handles writing the completely valid BMP header for plotting
     enc_img = Image.frombytes('RGB', (width, height), encrypted_pixel_bytes)
-    enc_img.save(output_filename)
-    print(f"Successfully created {output_filename}")
+    enc_img.save(output_bmp)
+    print(f"Successfully created {output_bmp} (Plotting) and {output_bin} (NIST)")
 
 # Generate IVs for modes that require them
 iv_cbc = os.urandom(16)

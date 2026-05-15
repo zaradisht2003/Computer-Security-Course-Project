@@ -1,4 +1,52 @@
+=== original_image ===
+--------------------------------------------------------
+ TEST NAME                 | RESULTS
+--------------------------------------------------------
+ Frequency                 | Passed   0 /   1 (  0.00%)
+ BlockFrequency            | Passed   0 /   1 (  0.00%)
+ CumulativeSums            | Passed   0 /   2 (  0.00%)
+ Runs                      | Passed   0 /   1 (  0.00%)
+ LongestRun                | Passed   0 /   1 (  0.00%)
+ Rank                      | Passed   0 /   1 (  0.00%)
+ FFT                       | Passed   0 /   1 (  0.00%)
+ NonOverlappingTemplate    | Passed   5 / 148 (  3.38%)
+ OverlappingTemplate       | Passed   0 /   1 (  0.00%)
+ Universal                 | Passed   0 /   1 (  0.00%)
+ ApproximateEntropy        | Passed   0 /   1 (  0.00%)
+ RandomExcursions          | ------ SKIPPED ------
+ RandomExcursionsVariant   | ------ SKIPPED ------
+ Serial                    | Passed   0 /   2 (  0.00%)
+ LinearComplexity          | Passed   0 /   1 (  0.00%)
+--------------------------------------------------------
+ TOTAL OVERALL SCORE       | Passed   5 / 162 (  3.09%)
+
+
+
 === ECB ===
+--------------------------------------------------------
+ TEST NAME                 | RESULTS
+--------------------------------------------------------
+ Frequency                 | Passed   0 /   1 (  0.00%)
+ BlockFrequency            | Passed   1 /   1 (100.00%)
+ CumulativeSums            | Passed   0 /   2 (  0.00%)
+ Runs                      | Passed   0 /   1 (  0.00%)
+ LongestRun                | Passed   0 /   1 (  0.00%)
+ Rank                      | Passed   0 /   1 (  0.00%)
+ FFT                       | Passed   0 /   1 (  0.00%)
+ NonOverlappingTemplate    | Passed   0 / 148 (  0.00%)
+ OverlappingTemplate       | Passed   0 /   1 (  0.00%)
+ Universal                 | Passed   0 /   1 (  0.00%)
+ ApproximateEntropy        | Passed   0 /   1 (  0.00%)
+ RandomExcursions          | ------ SKIPPED ------
+ RandomExcursionsVariant   | ------ SKIPPED ------
+ Serial                    | Passed   0 /   2 (  0.00%)
+ LinearComplexity          | Passed   0 /   1 (  0.00%)
+--------------------------------------------------------
+ TOTAL OVERALL SCORE       | Passed   1 / 162 (  0.62%)
+
+
+
+=== CBC ===
 --------------------------------------------------------
  TEST NAME                 | RESULTS
 --------------------------------------------------------
@@ -9,40 +57,16 @@
  LongestRun                | Passed   1 /   1 (100.00%)
  Rank                      | Passed   1 /   1 (100.00%)
  FFT                       | Passed   1 /   1 (100.00%)
- NonOverlappingTemplate    | Passed 148 / 148 (100.00%)
+ NonOverlappingTemplate    | Passed 146 / 148 ( 98.65%)
  OverlappingTemplate       | Passed   1 /   1 (100.00%)
  Universal                 | Passed   1 /   1 (100.00%)
  ApproximateEntropy        | Passed   1 /   1 (100.00%)
  RandomExcursions          | Passed   8 /   8 (100.00%)
  RandomExcursionsVariant   | Passed  18 /  18 (100.00%)
- Serial                    | Passed   1 /   2 ( 50.00%)
- LinearComplexity          | Passed   1 /   1 (100.00%)
---------------------------------------------------------
- TOTAL OVERALL SCORE       | Passed 187 / 188 ( 99.47%)
-
-
-
-=== CBC ===
---------------------------------------------------------
- TEST NAME                 | RESULTS
---------------------------------------------------------
- Frequency                 | Passed   1 /   1 (100.00%)
- BlockFrequency            | Passed   1 /   1 (100.00%)
- CumulativeSums            | Passed   1 /   2 ( 50.00%)
- Runs                      | Passed   1 /   1 (100.00%)
- LongestRun                | Passed   1 /   1 (100.00%)
- Rank                      | Passed   1 /   1 (100.00%)
- FFT                       | Passed   1 /   1 (100.00%)
- NonOverlappingTemplate    | Passed 147 / 148 ( 99.32%)
- OverlappingTemplate       | Passed   1 /   1 (100.00%)
- Universal                 | Passed   1 /   1 (100.00%)
- ApproximateEntropy        | Passed   1 /   1 (100.00%)
- RandomExcursions          | ------ SKIPPED ------
- RandomExcursionsVariant   | ------ SKIPPED ------
  Serial                    | Passed   2 /   2 (100.00%)
  LinearComplexity          | Passed   1 /   1 (100.00%)
 --------------------------------------------------------
- TOTAL OVERALL SCORE       | Passed 160 / 162 ( 98.77%)
+ TOTAL OVERALL SCORE       | Passed 186 / 188 ( 98.94%)
 
 
 
@@ -57,7 +81,7 @@
  LongestRun                | Passed   1 /   1 (100.00%)
  Rank                      | Passed   1 /   1 (100.00%)
  FFT                       | Passed   1 /   1 (100.00%)
- NonOverlappingTemplate    | Passed 144 / 148 ( 97.30%)
+ NonOverlappingTemplate    | Passed 146 / 148 ( 98.65%)
  OverlappingTemplate       | Passed   1 /   1 (100.00%)
  Universal                 | Passed   1 /   1 (100.00%)
  ApproximateEntropy        | Passed   1 /   1 (100.00%)
@@ -66,7 +90,7 @@
  Serial                    | Passed   2 /   2 (100.00%)
  LinearComplexity          | Passed   1 /   1 (100.00%)
 --------------------------------------------------------
- TOTAL OVERALL SCORE       | Passed 184 / 188 ( 97.87%)
+ TOTAL OVERALL SCORE       | Passed 186 / 188 ( 98.94%)
 
 
 
@@ -81,7 +105,7 @@
  LongestRun                | Passed   1 /   1 (100.00%)
  Rank                      | Passed   1 /   1 (100.00%)
  FFT                       | Passed   1 /   1 (100.00%)
- NonOverlappingTemplate    | Passed 142 / 148 ( 95.95%)
+ NonOverlappingTemplate    | Passed 147 / 148 ( 99.32%)
  OverlappingTemplate       | Passed   1 /   1 (100.00%)
  Universal                 | Passed   1 /   1 (100.00%)
  ApproximateEntropy        | Passed   1 /   1 (100.00%)
@@ -90,7 +114,7 @@
  Serial                    | Passed   2 /   2 (100.00%)
  LinearComplexity          | Passed   1 /   1 (100.00%)
 --------------------------------------------------------
- TOTAL OVERALL SCORE       | Passed 182 / 188 ( 96.81%)
+ TOTAL OVERALL SCORE       | Passed 187 / 188 ( 99.47%)
 
 
 
