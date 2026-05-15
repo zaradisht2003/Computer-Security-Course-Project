@@ -1,4 +1,7 @@
 import os
+import matplotlib.pyplot as plt
+from PIL import Image
+import io
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from Crypto.PublicKey import RSA
@@ -27,6 +30,11 @@ body = image_data[54:]
 # Pad the body to be a multiple of AES block size (16 bytes)
 padded_body = pad(body, AES.block_size)
 
+# Dictionary to hold the image data for plotting later
+images_to_plot = {
+    "Original": image_data
+}
+
 # Define a function to encrypt and save the image
 def encrypt_and_save(mode_name, mode_flag, iv=None):
     output_filename = f'encrypted_{mode_name}.bmp'
@@ -37,11 +45,15 @@ def encrypt_and_save(mode_name, mode_flag, iv=None):
         cipher = AES.new(aes_key, mode_flag, iv)
         
     ciphertext_body = cipher.encrypt(padded_body)
+    final_image_bytes = header + ciphertext_body
     
     # Reattach the unencrypted header to the encrypted body
     with open(output_filename, 'wb') as f:
-        f.write(header + ciphertext_body)
+        f.write(final_image_bytes)
     print(f"Successfully created {output_filename}")
+    
+    # Store bytes for the final plot
+    images_to_plot[mode_name] = final_image_bytes
 
 # Generate IVs for modes that require them
 iv_cbc = os.urandom(16)
@@ -83,3 +95,26 @@ try:
     print("Verification Result: True (Signature is valid)")
 except (ValueError, TypeError):
     print("Verification Result: False (Signature is invalid)")
+
+# ==========================================
+# NEW: Plotting the Results
+# ==========================================
+print("\n--- Plotting Images ---")
+
+# Set up a grid of 1 row and 5 columns
+fig, axes = plt.subplots(1, 5, figsize=(20, 5))
+
+for ax, (title, img_bytes) in zip(axes, images_to_plot.items()):
+    try:
+        # Use BytesIO to let PIL open the raw byte data directly
+        img = Image.open(io.BytesIO(img_bytes))
+        ax.imshow(img)
+    except Exception as e:
+        # Fallback in case the randomized bytes disrupt PIL's BMP parser
+        ax.text(0.5, 0.5, "[Render Error]", ha='center', va='center', color='red')
+    
+    ax.set_title(title)
+    ax.axis('off')  # Hide the pixel coordinate axes
+
+plt.tight_layout()
+plt.show()
