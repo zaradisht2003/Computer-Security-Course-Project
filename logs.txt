@@ -1,0 +1,32 @@
+-----------------------------------------------------
+Testing: ../portal_image.bmp
+Total Bits: 2409328. Running 10 streams of 240932 bits.
+Test completed! Total Score: 368 / 1620 (22.72%)
+-----------------------------------------------------
+Testing: ../encrypted_ECB.bmp
+Total Bits: 2409392. Running 10 streams of 240939 bits.
+Test completed! Total Score: 1671 / 1698 (98.41%)
+-----------------------------------------------------
+Testing: ../encrypted_CBC.bmp
+Total Bits: 2409392. Running 10 streams of 240939 bits.
+./run_nist_tests.sh: line 25: 17910 Segmentation fault         ./assess "$STREAM_LENGTH" <<EOF > /dev/null 2>&1
+0
+$IMG
+1
+0
+10
+1
+EOF
+
+Test completed! Total Score: 1332 / 1350 (98.67%)
+-----------------------------------------------------
+Testing: ../encrypted_CFB.bmp
+Total Bits: 2409392. Running 10 streams of 240939 bits.
+Test completed! Total Score: 1656 / 1672 (99.04%)
+-----------------------------------------------------
+Testing: ../encrypted_OFB.bmp
+Total Bits: 2409392. Running 10 streams of 240939 bits.
+Test completed! Total Score: 1645 / 1672 (98.39%)
+-----------------------------------------------------
+Automation Complete!
+Your full report is saved at: ../NIST_Comprehensive_Report.txt
